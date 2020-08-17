@@ -1,0 +1,569 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="content-type" content="application/xhtml+xml;charset=iso-8859-1" />
+    <title>getmail documentation (version 6)</title>
+    <meta name="author" content="Charles Cazabon and others" />
+    <meta name="description" content="Official documentation for getmail version 6, an extensible mail-retrieval program with support for POP3, IMAP, SDPS, SSL, domain mailboxes, message filtering, and other features." />
+    <meta name="keywords" content="getmail, getmail 6, getmail6, POP3, IMAP, SSL, domain mailbox, multidrop, fetchmail replacement, message filtering, maildir, mboxrd, MDA" />
+    <style type="text/css" media="all">@import "getmaildocs.css";</style>
+    <style type="text/css" media="all">@import "/style/styles.css";</style>
+</head>
+<body id="top">
+    <div class="content">
+
+<h1 id="title">getmail documentation</h1>
+<p class="introduction">
+    This is the documentation for getmail version 6.
+</p>
+<p class="about">
+    getmail is Copyright &copy; 1998-2019 by Charles Cazabon
+    &lt;charlesc-getmail @ pyropus.ca&gt;<br>
+	and &copy; 2020 by Roland Puntaier
+    &lt;roland.puntaier @ gmail.com&gt;
+</p>
+<p class="about">
+    getmail is licensed under the
+    <a href="COPYING">GNU General Public License version 2</a> (only).
+</p>
+
+<h1 id="toc">Table of Contents</h1>
+<ul>
+    <li><a href="documentation.html">getmail documentation (version 6)</a></li>
+    <li>
+        <ul>
+        <li><a href="documentation.html#title">getmail documentation</a></li>
+        <li>
+            <ul>
+            <li><a href="documentation.html#features">Features</a></li>
+            <li><a href="documentation.html#requirements">Requirements</a></li>
+            <li><a href="documentation.html#obtaining">Obtaining getmail</a></li>
+            <li><a href="documentation.html#installing">Installing getmail</a></li>
+            <li>
+                <ul>
+                <li><a href="documentation.html#installing-impatient">For the impatient</a></li>
+                <li><a href="documentation.html#installing-full">Full installation instructions</a></li>
+                <li><a href="documentation.html#installing-source">Installing directly from the source</a></li>
+                <li>
+                    <ul>
+                    <li><a href="documentation.html#installing-source-default">Installing in the default location</a></li>
+                    <li><a href="documentation.html#installing-source-altprefix">Installing under an alternate <span class="file">prefix</span> directory</a></li>
+                    <li><a href="documentation.html#installing-source-altdirs">Installing parts of the package to alternate directories</a></li>
+                    </ul>
+                </li>
+                <li><a href="documentation.html#install-alt-libdir">Installing the <span class="file">getmailcore</span> package in a non-standard location</a></li>
+                <li><a href="documentation.html#installing-binary">Building a binary package from the source</a></li>
+                </ul>
+            </li>
+            </ul>
+        </li>
+        </ul>
+    </li>
+    <li><a href="configuration.html">getmail configuration (version 5)</a></li>
+    <li>
+        <ul>
+        <li><a href="configuration.html#configuring">Configuring getmail</a></li>
+        <li>
+            <ul>
+            <li><a href="configuration.html#rcfile">Creating a getmail rc file</a></li>
+            </ul>
+        </li>
+        <li><a href="configuration.html#running">Running getmail</a></li>
+        <li>
+            <ul>
+            <li><a href="configuration.html#running-commandline-options">Commandline options</a></li>
+            <li><a href="configuration.html#running-mda">Using getmail as an MDA</a></li>
+            <li><a href="configuration.html#running-fetch">Using getmail_fetch to retrieve mail from scripts</a></li>
+            </ul>
+        </li>
+        </ul>
+    </li>
+    <li><a href="troubleshooting.html">getmail troubleshooting (version 6)</a></li>
+    <li>
+        <ul>
+        <li><a href="troubleshooting.html#troubleshooting">Troubleshooting problems</a></li>
+        <li>
+            <ul>
+            <li><a href="troubleshooting.html#error-messages">Error messages</a></li>
+            <li><a href="troubleshooting.html#warning-messages">Warning messages</a></li>
+            <li><a href="troubleshooting.html#unexpected-behaviour">Unexpected Behaviour</a></li>
+            </ul>
+        </li>
+        </ul>
+    </li>
+    <li><a href="faq.html">getmail frequently-asked questions (FAQs) (version 6)</a></li>
+    <li>
+        <ul>
+        <li><a href="faq.html#faq">Frequently-Asked Questions (FAQs)</a></li>
+        <li>
+            <ul>
+            <li><a href="faq.html#faq-about">About getmail</a></li>
+            <li><a href="faq.html#faq-about6">What is getmail6 and how does it relate to getmail?</a></li>
+            <li><a href="faq.html#faq-configuring">Configuring getmail</a></li>
+            <li><a href="faq.html#faq-how">How do I &hellip;</a></li>
+            <li><a href="faq.html#faq-integrating">Using getmail with other software</a></li>
+            <li><a href="faq.html#faq-notabug">I think I found this bug in getmail &hellip;</a></li>
+            </ul>
+        </li>
+        </ul>
+    </li>
+</ul>
+
+<!-- ********************************************************************** -->
+
+<h2 id="features">Features</h2>
+<p>
+    getmail is a mail retriever designed to allow you to get your mail from one
+    or more mail accounts on various mail servers to your local machine for
+    reading with a minimum of fuss.  getmail is designed to be secure, flexible,
+    reliable, and easy-to-use. getmail is designed to replace other mail
+    retrievers such as fetchmail.
+</p>
+<p>
+    getmail version 6 includes the following features:
+</p>
+<ul>
+    <li>
+        simple to install, configure, and use
+    </li>
+    <li>
+        retrieve virtually any mail
+        <ul>
+            <li>
+                support for accessing mailboxes with the following protocols:
+                <ul>
+                    <li>POP3</li>
+                    <li>POP3-over-SSL</li>
+                    <li>IMAP4</li>
+                    <li>IMAP4-over-SSL</li>
+                    <li>SDPS (Demon UK's extensions to POP3)</li>
+                </ul>
+            </li>
+            <li>
+                support for single-user and domain mailboxes
+            </li>
+            <li>
+                retrieve mail from an unlimited number of mailboxes and servers
+            </li>
+            <li>
+                can remember which mail it has already retrieved, and can be set
+                to only download new messages
+            </li>
+        </ul>
+    </li>
+    <li>
+        support for message filtering, classification, and annotation by
+        external programs like spam filters and anti-virus programs
+    </li>
+    <li>
+        support for delivering messages to different destinations based on the
+        message recipient
+    </li>
+    <li>
+        reliability
+        <ul>
+            <li>
+                native safe and reliable delivery support for maildirs and
+                mboxrd files, in addition to delivery through arbitrary external
+                message delivery agents (MDAs)
+            </li>
+            <li>
+                does not destroy information by rewriting mail headers
+            </li>
+            <li>
+                does not cause mail loops by doing SMTP injection, and therefore
+                does not require that you run an MTA (like qmail or sendmail) on
+                your host
+            </li>
+        </ul>
+    </li>
+    <li>
+        written in Python, and therefore easy to extend or customize
+        <ul>
+            <li>
+                a flexible, extensible architecture so that support for new mail
+                access protocols, message filtering operations, or destination
+                types can be easily added
+            </li>
+            <li>
+                cross-platform operation; getmail 6 should work on Unix/Linux,
+                Macintosh, and other platforms.  Windows support available
+                under the free <a href="http://cygwin.com/">Cygwin</a> package.
+            </li>
+        </ul>
+    </li>
+    <li>
+        winner of various software awards, including DaveCentral's &quot;Best of
+        Linux&quot;
+    </li>
+</ul>
+
+<!-- ********************************************************************** -->
+
+<h2 id="requirements">Requirements</h2>
+<p>
+    getmail version 6 requires
+    <a href="http://www.python.org/">Python</a> version 3 or later. If
+    you have only an earlier version of Python available, you can
+    install the latest version without disturbing your current
+    version, or
+    use <a href="http://pyropus.ca/software/getmail/">getmail version
+    5.* from the original getmail author</a>.
+</p>
+<p>
+    getmail 6 requires that servers uniquely identify the messages
+    they provide (via the
+    <span class="file">UIDL</span>
+    command) to getmail for full functionality.  Certain very old or broken
+    POP3 servers may not be capable of this or may not implement
+    the
+    <span class="file">UIDL</span>
+    command at all, and limited support is available for such servers via the
+    <span class="file">BrokenUIDLPOP3Retriever</span>
+    and
+    <span class="file">BrokenUIDLPOP3SSLRetriever</span>
+    retriever classes.
+</p>
+
+<!-- ********************************************************************** -->
+
+<h2 id="obtaining">Obtaining getmail</h2>
+<p>
+    Download getmail 6 from the official website main page at
+    <a href="http://getmail6.org">http://getmail6.org/</a>
+    .
+</p>
+
+<!-- ********************************************************************** -->
+
+<h2 id="installing">Installing getmail</h2>
+
+<h3 id="installing-impatient">For the impatient</h3>
+<p>
+    Installing getmail is very easy; just download the tarball
+    distribution, unpack it, change into the directory
+    it unpacks into, and run this command:
+</p>
+<pre class="example">
+$ python setup.py install
+</pre>
+<p>
+    That's all there is to it.  99.9% of users don't need a special
+    package/port/etc.
+    If you'd like more details on install options, keep reading.
+</p>
+
+<h3 id="installing-full">Full installation instructions</h3>
+<p>
+    Once you have downloaded or otherwise obtained getmail, unpack it.
+    On GNU-ish Unix-like systems, this means:
+</p>
+<pre class="example">
+$ tar xzf getmail-<span class="meta">version</span>.tar.gz
+</pre>
+<p>
+    On Macintosh systems, use a Zip-type archiver program to unpack
+    the tarball.
+</p>
+<p>
+    On SystemV-like Unix systems, you may instead need to break this down
+    into two steps:
+</p>
+<pre class="example">
+$ gunzip getmail-<span class="meta">version</span>.tar.gz
+$ tar xf getmail-<span class="meta">version</span>.tar
+</pre>
+<p>
+    Then, change into the extracted getmail directory and start the build
+    process.  The easiest installation method is to use the included
+    <span class="file">setup.py</span>
+    <a href="http://docs.python.org/inst/inst.html">Python distutils script</a>
+    to build and install getmail directly.  Alternatively, you can build a
+    binary package (i.e., an RPM or similar managed software package) for your
+    system from the source package and install the resulting package, but the
+    Python distutils support for this is
+    <a href="http://docs.python.org/dist/postinstallation-script.html">spotty</a>
+    at present.
+</p>
+
+<h3 id="installing-source">Installing directly from the source</h3>
+<p>
+    To build and install directly from the included source, follow these
+    steps.
+</p>
+<pre class="example">
+$ cd getmail-<span class="meta">version</span>
+$ python setup.py build
+</pre>
+<p>
+    When that completes in a few seconds, become root and then install the
+    software.  You can install in the default location, or specify an alternate
+    location to install the software, or specify alternate directories for
+    only part of the package.
+</p>
+
+<h4 id="installing-source-default">Installing in the default location</h4>
+<p>
+    To install in the default location, become user root and install with
+    the following commands:
+</p>
+<pre class="example">
+$ su
+<span class="meta">enter root password</span>
+# python setup.py install
+</pre>
+<p>
+    This will, by default, install files into subdirectories under the directory
+    <span class="meta">prefix</span>,
+    which is the directory that your Python installation was configured to
+    install under (typically
+    <span class="file">/usr/local/</span>
+    or
+    <span class="file">/usr/</span>,
+    but other values are sometimes used):
+</p>
+<ul>
+    <li>
+        the scripts
+        <span class="file">getmail</span>,
+        <span class="file">getmail_fetch</span>,
+        <span class="file">getmail_maildir</span>,
+        and
+        <span class="file">getmail_mbox</span>
+        will be installed under
+        <span class="file"><span class="meta">prefix</span>/bin/</span>
+    </li>
+    <li>
+        the Python package
+        <span class="file">getmailcore</span>
+        (which implements all the protocol&ndash;, filter&ndash;, and
+        destination-specific code for getmail, plus various other bits) will be
+        installed under the site-specific packages directory of your Python
+        library directory.  This directory is
+        <span class="file"><span class="meta">prefix</span>/lib/python-<span class="meta">python-version</span>/site-packages/</span>.
+    </li>
+    <li>
+        The documentation directory
+        <span class="file">getmail-<span class="meta">getmail-version</span></span>
+        will be installed under
+        <span class="file"><span class="meta">prefix</span>/doc/</span>
+    </li>
+    <li>
+        The manual pages for the four scripts will be installed under
+        <span class="file"><span class="meta">prefix</span>/man/</span>
+    </li>
+</ul>
+<p>
+    You can see a list of the default installation locations by running:
+</p>
+<pre class="example">
+# python setup.py install --show-default-install-dirs
+</pre>
+
+<h4 id="installing-source-altprefix">Installing under an alternate <span class="file">prefix</span> directory</h4>
+<p>
+    You can specify an alternate
+    <span class="meta">prefix</span>
+    directory by supplying the
+    <span class="file">--prefix</span>
+    option to the install command, like this:
+</p>
+<pre class="example">
+# python setup.py install --prefix=<span class="meta">path</span>
+</pre>
+<p>
+    This will install the various parts of the package in subdirectories like in
+    the default installation (see the section
+    <a href="#installing-source-default">Installing in the default location</a>
+    above), but under your specified
+    <span class="file">prefix</span>
+    directory. These alternate installations allow you to install the software
+    without root privileges (say, by installing under
+    <span class="file">$HOME/</span>).
+    Note, however, that the
+    <span class="file">getmailcore</span>
+    package will not be in the default Python module search path if you do
+    this; see the section
+    <a href="#install-alt-libdir">Installing the <span class="file">getmailcore</span> package in a non-standard location</a>
+    if you use this option.
+</p>
+
+<h4 id="installing-source-altdirs">Installing parts of the package to alternate directories</h4>
+<p>
+    If you only want to change the directory for some of the components, use
+    the following options:
+</p>
+<ul>
+    <li>
+        <span class="file">--install-lib=<span class="meta">path</span></span>
+        specifies the directory the
+        <span class="file">getmailcore</span>
+        package is installed under (i.e., it will be installed as
+        <span class="file"><span class="meta">path</span>/getmailcore</span>
+        ).  See the section
+        <a href="#install-alt-libdir">Installing the <span class="file">getmailcore</span> package in a non-standard location</a>
+        if you use this option.
+    </li>
+    <li>
+        <span class="file">--install-scripts=<span class="meta">path</span></span>
+        specifies the directory the four scripts are installed under  (i.e.,
+        they will be installed directly in
+        <span class="file"><span class="meta">path</span>/</span>
+        ).
+    </li>
+    <li>
+        <span class="file">--install-data=<span class="meta">path</span></span>
+        specifies the directory the documentation is installed under (i.e., the
+        HTML and plaintext documentation will be installed in the directory
+        <span class="file"><span class="meta">path</span>/doc/getmail-<span class="meta">getmail-version</span>/</span>,
+        and the man(1) pages will be installed in
+        <span class="file"><span class="meta">path</span>/man/man1/</span>.
+    </li>
+</ul>
+<p>
+    For example, if your Python installation is located under
+    <span class="file">/usr/</span>
+    because it was installed as part of your OS, but you would like the getmail
+    scripts installed into
+    <span class="file">/usr/local/bin/</span>
+    instead of
+    <span class="file">/usr/bin/</span>,
+    while still letting the
+    <span class="file">getmailcore</span>
+    package be installed under
+    <span class="file">/usr/lib/python-<span class="meta">python-version</span>/site-packages/</span>,
+    and the documentation and man pages under
+    <span class="file">/usr/doc/</span>
+    and
+    <span class="file">/usr/man/</span>
+    you could use this command to install:
+</p>
+<pre class="example">
+# python setup.py --install-scripts=/usr/local/bin/
+</pre>
+<p>
+    If you also wanted to locate the documentation and man pages under
+    <span class="file">/usr/local/</span>
+    but still install the
+    <span class="file">getmailcore</span>
+    package in the default
+    <span class="file">/usr/lib/python-<span class="meta">python-version</span>/site-packages/</span>,
+    you would instead use this command to install:
+</p>
+<pre class="example">
+# python setup.py --install-scripts=/usr/local/bin/ --install-data=/usr/local/
+</pre>
+
+<h3 class="warning" id="install-alt-libdir">Installing the <span class="file">getmailcore</span> package in a non-standard location</h3>
+<p>
+    Note:  if you use one of the above methods to install the
+    <span class="file">getmailcore</span>
+    package into a directory other than the default, the four scripts
+    (<span class="file">getmail</span>,
+    <span class="file">getmail_fetch</span>,
+    <span class="file">getmail_maildir</span>,
+    and
+    <span class="file">getmail_mbox</span>)
+    will almost certainly be unable to locate the required files from the
+    <span class="file">getmailcore</span>
+    package, because they will not be in a directory in the standard Python
+    module search path.  You will need to do one of the following to make those
+    files available to the scripts:
+</p>
+<ul>
+    <li>
+        <p>
+            set the environment variable
+            <span class="file">PYTHONPATH</span>
+            to tell Python where to find the appropriate modules.  See the
+            <a href="http://docs.python.org/tut/node8.html#SECTION008110000000000000000">
+                documentation at the Python.org website
+            </a>
+            for details.
+        </p>
+        <p class="warning">
+            Note that setting
+            <span class="file">PYTHONPATH</span>
+            in
+            <span class="file">$HOME/.profile</span>
+            (or equivalent) is
+            <strong>not</strong>
+            sufficient -- for instance,
+            <span class="file">cron</span>
+            runs jobs in a simpler environment, ignoring
+            <span class="file">$HOME/.profile</span>,
+            and getmail would therefore fail when run as a user cron job.
+            It is
+            <strong>strongly recommended</strong>
+            that you install the Python library files in the
+            <span class="file">site-packages</span>
+            directory which Python provides for exactly this reason.
+        </p>
+    </li>
+    <li>
+        modify the scripts to explicitly tell Python where you've installed
+        them.  Insert a line like this:
+<pre class="example">
+sys.path.append('/path/to/installation-directory')
+</pre>
+        containing the path to the directory you installed the
+        <span class="file">getmailcore</span>
+        directory in, somewhere below the line which reads
+<pre class="example">
+import sys
+</pre>
+        and before the first line which references
+        <span class="file">getmailcore</span>
+        .
+    </li>
+</ul>
+
+<h3 id="installing-binary">Building a binary package from the source</h3>
+<p>
+    To build a binary package from the included source, run the following
+    command from inside the unpacked getmail source.
+</p>
+<pre class="example">
+$ cd getmail-<span class="meta">version</span>
+$ python setup.py bdist --format=<span class="meta">package-format</span>
+</pre>
+<p>
+    The useful allowed values for <span class="meta">package-format</span> are:
+</p>
+<ul>
+    <li>
+        <span class="file">rpm</span>
+        &mdash; build a
+        <span class="file">.noarch.rpm</span>
+        file which can then be installed with the
+        <span class="file">rpm</span>
+        package manager.
+    </li>
+    <li>
+        <span class="file">pkgtool</span>
+        &mdash; build a package for the Sun Solaris
+        <span class="file">pkgtool</span>
+        package manager.
+    </li>
+    <li>
+        <span class="file">sdux</span>
+        &mdash; build a package for the HP/UX
+        <span class="file">swinstall</span>
+        software installer.
+    </li>
+</ul>
+<p>
+    Ideally, if you use this method, it will result in a &quot;built
+    distribution&quot; binary package in a subdirectory named
+    <span class="file">dist</span>
+    which can then be installed using the appropriate system-specific tool.
+    If you have problems with this process, please do not ask me for assistance;
+    ask your OS vendor or
+    <a href="news:comp.lang.python">the comp.lang.python newsgroup</a>.
+    The install-directory-from-source process above is the only one I can
+    support, and it should work on all platforms.
+</p>
+    </div>
+</body>
+</html>

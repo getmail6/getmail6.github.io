@@ -5,7 +5,7 @@ Welcome to getmail 6, a mail retriever with support for POP3, POP3-over-SSL, IMA
 
 Getmail 6 is a fork of [getmail v5.14 by Charles Cazabon](http://pyropus.ca/software/getmail/) with adaptations to work with Python 3 and newer. Getmail 6 is not supported nor sanctioned by getmail's original author. Support for getmail 6 can be found on this website and by opening issues on [our GitHub repository](https://github.com/getmail6/getmail6).
 
-The latest release is version 6.12, released on December 31, 2020 and available for [download here](https://github.com/getmail6/getmail6/releases/tag/v6.12)
+The latest release is version 6.13, released on January 7, 2021 and available for [download here](https://github.com/getmail6/getmail6/releases/tag/v6.13)
 
 
 

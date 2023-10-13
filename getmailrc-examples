@@ -1,0 +1,424 @@
+#
+# This file contains various examples of configuration sections to use
+# in your getmail rc file.  You need one file for each mail account you
+# want to retrieve mail from.  These files should be placed in your
+# getmail configuration/data directory
+# (default: ~/.config/getmail/).
+# If you only need one rc file, name it getmailrc in that directory,
+# and you won't need to supply any commandline options to run getmail.
+#
+
+#
+# Example 0:  Using pass as password_command to manage your passwords,
+# storing all messages in a maildir.
+#
+
+[retriever]
+type = SimpleIMAPSSLRetriever
+server = imap.gmail.com 
+port = 993
+username = <your_email_here>
+password_command = ("pass", "<your_email_here>")
+
+[destination]
+type = Maildir
+path = ~/Mail/<your_email_here>/INBOX/
+
+[options]
+read_all = true
+delete = true
+
+#
+# Example 1:  simplest case of retrieving mail from one POP3 server and
+# storing all messages in a maildir.
+#
+
+[retriever]
+type = SimplePOP3Retriever
+server = pop.example.net
+username = jeff.plotzky
+password = mailpassword
+
+[destination]
+type = Maildir
+path = ~jeffp/Maildir/
+
+#
+# Example 2:  same as (1), but operate quietly, delete messages from
+# the server after retrieving them, and log getmail's actions (in detail)
+# to a file.
+#
+
+[options]
+verbose = 0
+delete = true
+message_log = ~/.getmail/log
+message_log_verbose = true
+
+[retriever]
+type = SimplePOP3Retriever
+server = pop.example.net
+username = jeff.plotzky
+password = mailpassword
+
+[destination]
+type = Maildir
+path = ~jeffp/Maildir/
+
+#
+# Example 3: same as (1), but the mail account is accessed via IMAP4 instead
+# of POP3.
+#
+
+[retriever]
+type = SimpleIMAPRetriever
+server = mail.example.net
+username = jeff.plotzky
+password = mailpassword
+
+[destination]
+type = Maildir
+path = ~jeffp/Maildir/
+
+#
+# Example 4: same as (3), but retrieve mail from the INBOX, INBOX.spam, and
+# mailing-lists.getmail-users mail folders.
+#
+
+[retriever]
+type = SimpleIMAPRetriever
+server = mail.example.net
+username = jeff.plotzky
+password = mailpassword
+mailboxes = ("INBOX", "INBOX.spam", "mailing-lists.getmail-users")
+
+[destination]
+type = Maildir
+path = ~jeffp/Maildir/
+
+#
+# Example 5: same as (3), but move messages to the mail folder "sent-mail"
+# after retrieving them.  Note that you do this by setting delete and
+# move_on_delete options.
+#
+
+[options]
+delete = true
+
+[retriever]
+type = SimpleIMAPRetriever
+server = mail.example.net
+username = jeff.plotzky
+password = mailpassword
+move_on_delete = sent-mail
+
+[destination]
+type = Maildir
+path = ~jeffp/Maildir/
+
+#
+# Example 6:  same as (1), but deliver the messages to an mboxrd-format mbox
+# file as user "jeffp".
+#
+
+[retriever]
+type = SimplePOP3Retriever
+server = pop.example.net
+username = jeff.plotzky
+password = mailpassword
+
+[destination]
+type = Mboxrd
+path = ~jeffp/Mail/inbox
+user = jeffp
+
+#
+# Example 7:  same as (1), but deliver the messages through an external MDA
+# which takes several arguments.
+#
+
+[retriever]
+type = SimplePOP3Retriever
+server = pop.example.net
+username = jeff.plotzky
+password = mailpassword
+
+[destination]
+type = MDA_external
+path = /usr/local/bin/my-mda
+arguments = ("--message-from-stdin", "--scan-message", "--to-maildir",
+  "~jeffp/Maildir/")
+
+#
+# Example 8:  retrieve mail from a corporate POP3-SSL domain mailbox,
+# sort messages for several local users and deliver to maildirs in their
+# home directories (except Sam, who likes mbox files, and Christina, who
+# uses procmail for further sorting), and deliver all other mail to
+# Joe, who serves as postmaster for the company.  Sam also needs
+# to receive mail for "sam1", "sam23", etc, so we use a regular expression
+# matching "sam" plus zero or more decimal digits.
+#
+
+[retriever]
+type = MultidropPOP3SSLRetriever
+server = pop.example.net
+username = companylogin
+password = mailpassword
+# Our domain mailbox mailhost records the envelope recipient address in a
+# new Delivered-To: header field at the top of the message.
+envelope_recipient = delivered-to:1
+
+[destination]
+type = MultiSorter
+default = [postmaster]
+locals = (
+  ("jeffk@company.example.net",      "[jeff]"),
+  ("martinh@company.example.net",    "[martin]"),
+  (r"sam\D*@company.example.net",    "[sam]"),
+  ("c.fellowes@company.example.net", "[christina-procmail]")
+  )
+
+[postmaster]
+type = Maildir
+path = ~joe/Mail/postmaster/
+user = joe
+
+[jeff]
+type = Maildir
+path = ~jeffp/Maildir/
+user = jeffp
+
+[martin]
+type = Maildir
+path = ~martinh/Maildir/
+user = martinh
+
+[sam]
+type = Mboxrd
+path = ~sam/Mail/inbox
+user = sam
+
+[christina-procmail]
+type = MDA_external
+path = /usr/local/bin/procmail
+# procmail requires either that the message starts with an mboxrd-style
+# "From " line (which getmail can generate by setting "unixfrom" to True), or
+# that the -f option is provided as below.
+arguments = ("-f", "%(sender)", "-m", "/home/christina/.procmailrc")
+user = christina
+
+#
+# Example 9: same as (3), but use SpamAssassin to filter out spam,
+# and ClamAV to filter out MS worms.
+#
+
+[retriever]
+type = SimpleIMAPRetriever
+server = mail.example.net
+username = jeff.plotzky
+password = mailpassword
+
+[filter-1]
+type = Filter_external
+path = /usr/local/bin/spamc
+
+[filter-2]
+type = Filter_classifier
+path = /usr/local/bin/clamscan
+arguments = ("--stdout", "--no-summary",
+    "--mbox", "--infected", "-")
+exitcodes_drop = (1,)
+
+[destination]
+type = Maildir
+path = ~jeffp/Maildir/
+
+#
+# Example 10: same as (3), but deliver all mail to two different local
+# mailboxes.
+#
+
+[retriever]
+type = SimpleIMAPRetriever
+server = mail.example.net
+username = jeff.plotzky
+password = mailpassword
+
+[destination]
+type = MultiDestination
+destinations = (
+    "~jeff/Maildir/",
+    "/var/log/mail-archive/current",
+    )
+
+#
+# Example 11:  retrieve mail from a simple (non-multidrop) POP3 mailbox.
+# Then extract addresses from the message header (see documentation for which
+# fields are examined), and deliver mail containing the address
+# <list1@domain.example.net> to ~/Mail/lists/list1/, mail containing the
+# address <list2@otherdomain.example.com> to ~/Mail/lists/list2/,
+# mail containing the address <othername@example.org> to ~/Mail/other/,
+# and all other mail gets delivered through the external MDA program
+# "my-mda" with some default arguments.
+#
+
+[retriever]
+type = SimplePOP3Retriever
+server = pop.example.net
+username = jeff.plotzky
+password = mailpassword
+
+[destination]
+type = MultiGuesser
+default = [my-mda]
+locals = (
+    ("list1@domain.example.net",        "~/Mail/lists/list1/"),
+    ("list2@otherdomain.example.com",   "~/Mail/lists/list2/"),
+    ("othername@example.org",           "~/Mail/other/"),
+    )
+
+[my-mda]
+type = MDA_external
+path = /path/to/my-mda
+arguments = ("-f", "%(sender)", "${HOME}/.mymdarc")
+
+#
+# Example 12: Gmail xoauth2 example
+#
+# A client_id and client_secret identify a web app or a desktop app.
+# getmail-gmail-xoauth-tokens
+# creates a local server with loopback redirect (127.0.0.1) to get the authorization.
+# https://developers.google.com/identity/protocols/oauth2/native-app#redirect-uri_loopback
+#
+# To initialize do:
+#
+# Step1: Create a new OAuth 2.0 Client-ID
+#
+# - project create:
+#   https://console.cloud.google.com/projectcreate
+# - consent screen:
+#   https://console.cloud.google.com/apis/credentials/consent
+#   only external available for non-workspace users.
+#   [ADD OR REMOVE SCOPE] https://mail.google.com/
+#   Test User: Add all your emails you want to use with getmail.
+# - credential:
+#   https://console.cloud.google.com/apis/credentials
+#   [Create Credentials/Oauth client ID] Desktop App / getmail
+#   DOWNLOAD JSON
+#
+# Step 2: for each email you mentioned as test user above,
+# create a file <email>.json according the below template.
+#
+# - Edit the email in each json file
+# - copy two lines from the downloaded json into each json file
+#   client_id
+#   client_secret
+#
+# {"scope": "https://mail.google.com/",
+#  "user": "your-gmail-user@gmail.com",
+#  "client_id": "the new client id",
+#  "client_secret": "the new secret",
+#  "token_uri": "https://accounts.google.com/o/oauth2/token",
+#  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+#  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs"}
+#
+# Step 3: init step, execute for each json file
+#
+#    getmail-gmail-xoauth-tokens --init /path-to-your-users-getmail-directory/<email>.json
+#
+# It will ask you to visit a http url.
+# On the browser:
+# - There will be a warning "Google hasn't verified this app": continue.
+# - Then there will be the consent screen: continue.
+#
+# getmail-gmail-xoauth-tokens will update the <email>.json file.
+#
+# Unfortunately this Step 3 needs to be repeated regularly.
+# Therefore on should better opt for an google generated "app password".
+#
+# Step 4: Update the `[retriever]` section of the rc file as below.
+# use_xoauth2 must be True, else [AUTHENTICATIONFAILED].
+#
+
+[retriever]
+type = SimpleIMAPSSLRetriever
+use_xoauth2 = True
+server = imap.gmail.com
+username = your-gmail-user@gmail.com
+password_command = ("getmail-gmail-xoauth-tokens", "/path/to/your/users/getmail/directory/<email>.json")
+
+#
+# Example 13: Microsoft Office 365 xoauth2 example
+# To initialize do:
+#
+# Step1: Create App Registration in Azure
+#
+# In a browser, open https://portal.azure.com
+# Select "Manage Azure Active Directory" (use the search if needed)
+# Select "App Registrations"
+# Select "New Registration"
+# Enter a project name, eg "getmail".
+# Select "Accounts in this organizational directory only (Single tenant)" from "Supported account types"
+# Select type "Web" and enter "http://localhost:8083" for "Redirect URI"
+# Select "Register"
+#
+# Now, from the new App's details page, make a note of:
+# * client_id
+# * tenant_id
+# (These are in the "Essentials" section.)
+#
+# Next create a secret by selecting "Certificates and secrets"
+# Select "New client secret"
+# * Description: password
+# * Expires: select preferred expiry date
+# Make a note of:
+# * client_secret
+# It is available by selecting "Value".
+#
+# Next add permissions:
+#
+# Select "API permissions", then "Add a permission".
+# Select "Microsoft Graph"
+# Select "Delegated permissions"
+# Search and select the following permissions:
+# * IMAP.AccessAsUser.All
+# * POP.AccessAsUser.All
+# * SMTP.Send
+# * offline_access
+# Select "Add permissions"
+
+# Step 2: Add the new credentials to the microsoft.json template
+#
+# {"scope": "https://outlook.office365.com/IMAP.AccessAsUser.All https://outlook.office365.com/POP.AccessAsUser.All https://outlook.office365.com/SMTP.Send offline_access",
+#  "user": "firstname.lastname@example.com",
+#  "client_id": "<client_id>",
+#  "client_secret": "<secret>",
+#  "token_uri": "https://login.microsoftonline.com/<tenant_id>/oauth2/v2.0/token",
+#  "auth_uri": "https://login.microsoftonline.com/<tenant_id>/oauth2/v2.0/authorize",
+#  "redirect_uri": "http://localhost"}
+#
+# Step 3: execute:
+#
+#    getmail-gmail-xoauth-tokens --init /path-to-your-users-getmail-directory/microsoft.json
+#
+# This will give you a URL you need to open in a browser.
+# Opening this URL will generate a HTTP-redirect that connects back and updates the json file.
+# Note: The script starts a local HTTP-server listening on http://localhost:8083.
+# If you connect from a remote machine, you will need to forward that port to your local
+# machine, so that the server can be reached via localhost:8083 on the machine running the browser.
+# (You only need to do this once.)
+#
+# getmail-gmail-xoauth-tokens is waiting for the reconnect with the URL that contains the verification code.
+# Once it received the callback
+#
+# getmail-gmail-xoauth-tokens will update the microsoft.json file. The json file
+# will now contain the required tokens.
+#
+# Step 4: Update the `[retriever] `section of the rc file.
+
+[retriever]
+type = SimpleIMAPSSLRetriever
+use_xoauth2 = True
+server = outlook.office365.com
+username = firstname.lastname@example.com
+password_command = ("getmail-gmail-xoauth-tokens", "/path-to-your-users-getmail-directory/microsoft.json")

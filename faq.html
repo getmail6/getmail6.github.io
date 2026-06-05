@@ -1,5 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
     "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!--
+docs/COPYING 2a + DRY: https://github.com/getmail6/getmail6
+Please refer to the git history regarding who changed what and when in this file.
+-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="content-type" content="application/xhtml+xml;charset=iso-8859-1" />
@@ -15,9 +19,8 @@
 
 <h1 id="title">getmail Frequently Asked Questions (FAQ)</h1>
 <p class="about">
-    getmail is Copyright &copy; 1998-2019 by Charles Cazabon
+    getmail6 is Copyright &copy; 1998-2026 by Charles Cazabon and others:<br>
     &lt;charlesc-getmail @ pyropus.ca&gt;<br>
-	and &copy; 2020 by Roland Puntaier
     &lt;roland.puntaier @ gmail.com&gt;
 </p>
 <p class="about">
@@ -27,7 +30,7 @@
 
 <h1 id="toc">Table of Contents</h1>
 <ul>
-    <li><a href="documentation.html">getmail documentation (version 6)</a></li>
+    <li><a href="documentation.html">getmail documentation</a></li>
     <li>
         <ul>
         <li><a href="documentation.html#title">getmail documentation</a></li>
@@ -60,7 +63,7 @@
         </li>
         </ul>
     </li>
-    <li><a href="troubleshooting.html">getmail troubleshooting (version 6)</a></li>
+    <li><a href="troubleshooting.html">getmail troubleshooting</a></li>
     <li>
         <ul>
         <li><a href="troubleshooting.html#troubleshooting">Troubleshooting problems</a></li>
@@ -73,7 +76,7 @@
         </li>
         </ul>
     </li>
-    <li><a href="faq.html">getmail frequently-asked questions (FAQs) (version 6)</a></li>
+    <li><a href="faq.html">getmail frequently-asked questions (FAQs)</a></li>
     <li>
         <ul>
         <li><a href="faq.html#faq">Frequently-Asked Questions (FAQs)</a></li>
@@ -287,7 +290,7 @@
     <a href="http://www.fsf.org/">Free Software</a>.
     As such, it comes with no warranty.  However, we will do our best to support
     getmail on a voluntary basis through our 
-    <a href="documentation.html#github">GitHub repository</a>.
+    <a href="https://github.com/getmail6/getmail6/issues">GitHub repository</a>.
 </p>
 <p>
     If you have questions about getmail, the first step is to read the
@@ -407,8 +410,8 @@
 
 <h3 id="faq-about-oldmail">What are these oldmail* files?  Can I delete or trim them?</h3>
 <p>
-    getmail stores its state - its &quot;memory&quot; of what it has seen in your
-    POP/IMAP account - in the oldmail files.
+    getmail stores &quote;&lt;msgid&gt;&#92;0&lt;timestamp&gt;&quote; of messages it has seen in your
+    POP/IMAP account in the oldmail files.
 </p>
 <p>
     <b>Do NOT delete or edit these files.</b>  You'll make getmail re-retrieve all
@@ -792,7 +795,7 @@
 <p>
     Confusion often arises among novice users about the difference between the
     message header and the message envelope; they seem to believe that they
-    are not independant.  This appears to be an artifact of their use of
+    are not independent.  This appears to be an artifact of their use of
     simple-minded GUI mail user agents (MUAs) that do not allow them to set
     the envelopes of their messages explicitly, but instead simply use the
     contents of the From: header field as the envelope sender address, and
@@ -969,6 +972,8 @@ exec /path/to/getmail $rcfiles $@
 </pre>
 <p>
     See any beginner's tutorial on Unix shell scripting for details.
+    Note: Since getmail 6.16 <pre>getmails</pre> scans <pre>$XDG_CONFIG_HOME/getmail/</pre>
+    for configuration files. See <pre>man getmails</pre>.
 </p>
 
 <h3 id="faq-how-filter">How do I get getmail to deliver messages to different mailboxes based on &hellip;</h3>
@@ -1271,7 +1276,7 @@ sleep 1800
 [filter]
 type = Filter_external
 path = /usr/local/bin/spamc
-arguments = (&quot;-s 10000&quot;, )
+arguments = (&quot;-s&quot;, &quot;10000&quot;)
 </pre>
 <p>
     The value supplied to the

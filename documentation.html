@@ -1,11 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
     "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!--
+docs/COPYING 2a + DRY: https://github.com/getmail6/getmail6
+Please refer to the git history regarding who changed what and when in this file.
+-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="content-type" content="application/xhtml+xml;charset=iso-8859-1" />
     <title>getmail documentation (version 6)</title>
     <meta name="author" content="Charles Cazabon and others" />
-    <meta name="description" content="Official documentation for getmail version 6, an extensible mail-retrieval program with support for POP3, IMAP, SDPS, SSL, domain mailboxes, message filtering, and other features." />
+    <meta name="description" content="Official documentation for getmail6, an extensible mail-retrieval program with support for POP3, IMAP, SDPS, SSL, domain mailboxes, message filtering, and other features." />
     <meta name="keywords" content="getmail, getmail 6, getmail6, POP3, IMAP, SSL, domain mailbox, multidrop, fetchmail replacement, message filtering, maildir, mboxrd, MDA" />
     <style type="text/css" media="all">@import "getmaildocs.css";</style>
     <style type="text/css" media="all">@import "/style/styles.css";</style>
@@ -15,22 +19,22 @@
 
 <h1 id="title">getmail documentation</h1>
 <p class="introduction">
-    This is the documentation for getmail version 6.
+    This is the documentation for getmail version 6,
+    a port of getmail version 5 to python 3 without adding features.
 </p>
 <p class="about">
-    getmail is Copyright &copy; 1998-2019 by Charles Cazabon
+    getmail6 is Copyright &copy; 1998-2026 by Charles Cazabon and others:<br>
     &lt;charlesc-getmail @ pyropus.ca&gt;<br>
-	and &copy; 2020 by Roland Puntaier
     &lt;roland.puntaier @ gmail.com&gt;
 </p>
 <p class="about">
-    getmail is licensed under the
+    getmail and getmail6 are licensed under the
     <a href="COPYING">GNU General Public License version 2</a> (only).
 </p>
 
 <h1 id="toc">Table of Contents</h1>
 <ul>
-    <li><a href="documentation.html">getmail documentation (version 6)</a></li>
+    <li><a href="documentation.html">getmail documentation</a></li>
     <li>
         <ul>
         <li><a href="documentation.html#title">getmail documentation</a></li>
@@ -60,7 +64,7 @@
         </li>
         </ul>
     </li>
-    <li><a href="configuration.html">getmail configuration (version 5)</a></li>
+    <li><a href="configuration.html">getmail configuration (version 6)</a></li>
     <li>
         <ul>
         <li><a href="configuration.html#configuring">Configuring getmail</a></li>
@@ -79,7 +83,7 @@
         </li>
         </ul>
     </li>
-    <li><a href="troubleshooting.html">getmail troubleshooting (version 6)</a></li>
+    <li><a href="troubleshooting.html">getmail troubleshooting</a></li>
     <li>
         <ul>
         <li><a href="troubleshooting.html#troubleshooting">Troubleshooting problems</a></li>
@@ -92,7 +96,7 @@
         </li>
         </ul>
     </li>
-    <li><a href="faq.html">getmail frequently-asked questions (FAQs) (version 6)</a></li>
+    <li><a href="faq.html">getmail frequently-asked questions (FAQs)</a></li>
     <li>
         <ul>
         <li><a href="faq.html#faq">Frequently-Asked Questions (FAQs)</a></li>
@@ -121,7 +125,7 @@
     retrievers such as fetchmail.
 </p>
 <p>
-    getmail version 6 includes the following features:
+    getmail includes the following features:
 </p>
 <ul>
     <li>
@@ -204,8 +208,8 @@
 <h2 id="requirements">Requirements</h2>
 <p>
     getmail version 6 requires
-    <a href="http://www.python.org/">Python</a> version 3 or later. If
-    you have only an earlier version of Python available, you can
+    <a href="http://www.python.org/">Python</a> version 3.7 or later.
+    If you have only an earlier version of Python available, you can
     install the latest version without disturbing your current
     version, or
     use <a href="http://pyropus.ca/software/getmail/">getmail version
@@ -241,12 +245,34 @@
 
 <h3 id="installing-impatient">For the impatient</h3>
 <p>
-    Installing getmail is very easy; just download the tarball
-    distribution, unpack it, change into the directory
+    Installing getmail is very easy:
+</p>
+<pre class="example">
+# sudo pip install getmail6
+</pre>
+<p>or</p>
+<pre class="example">
+# pip install --user getmail6
+</pre>
+<p>
+    To uninstalling do
+</p>
+<pre class="example">
+# sudo pip uninstall getmail6
+</pre>
+<p>or</p>
+<pre class="example">
+# pip uninstall getmail6
+</pre>
+<p>
+</p>
+<p>
+    Alternatively download the tarball distribution,
+    unpack it, change into the directory
     it unpacks into, and run this command:
 </p>
 <pre class="example">
-$ python setup.py install
+# python setup.py install
 </pre>
 <p>
     That's all there is to it.  99.9% of users don't need a special
@@ -260,7 +286,7 @@ $ python setup.py install
     On GNU-ish Unix-like systems, this means:
 </p>
 <pre class="example">
-$ tar xzf getmail-<span class="meta">version</span>.tar.gz
+# tar xzf getmail-<span class="meta">version</span>.tar.gz
 </pre>
 <p>
     On Macintosh systems, use a Zip-type archiver program to unpack
@@ -271,20 +297,14 @@ $ tar xzf getmail-<span class="meta">version</span>.tar.gz
     into two steps:
 </p>
 <pre class="example">
-$ gunzip getmail-<span class="meta">version</span>.tar.gz
-$ tar xf getmail-<span class="meta">version</span>.tar
+# gunzip getmail-<span class="meta">version</span>.tar.gz
+# tar xf getmail-<span class="meta">version</span>.tar
 </pre>
 <p>
-    Then, change into the extracted getmail directory and start the build
-    process.  The easiest installation method is to use the included
+    Then, change into the extracted getmail directory and start the build process.
+    The easiest installation method is to use the included
     <span class="file">setup.py</span>
-    <a href="http://docs.python.org/inst/inst.html">Python distutils script</a>
-    to build and install getmail directly.  Alternatively, you can build a
-    binary package (i.e., an RPM or similar managed software package) for your
-    system from the source package and install the resulting package, but the
-    Python distutils support for this is
-    <a href="http://docs.python.org/dist/postinstallation-script.html">spotty</a>
-    at present.
+    to build and install getmail directly.
 </p>
 
 <h3 id="installing-source">Installing directly from the source</h3>
@@ -293,8 +313,8 @@ $ tar xf getmail-<span class="meta">version</span>.tar
     steps.
 </p>
 <pre class="example">
-$ cd getmail-<span class="meta">version</span>
-$ python setup.py build
+# cd getmail-<span class="meta">version</span>
+# python setup.py build
 </pre>
 <p>
     When that completes in a few seconds, become root and then install the
@@ -309,7 +329,7 @@ $ python setup.py build
     the following commands:
 </p>
 <pre class="example">
-$ su
+# su
 <span class="meta">enter root password</span>
 # python setup.py install
 </pre>
@@ -327,6 +347,7 @@ $ su
     <li>
         the scripts
         <span class="file">getmail</span>,
+        <span class="file">getmails</span>,
         <span class="file">getmail_fetch</span>,
         <span class="file">getmail_maildir</span>,
         and
@@ -358,7 +379,7 @@ $ su
     You can see a list of the default installation locations by running:
 </p>
 <pre class="example">
-# python setup.py install --show-default-install-dirs
+# python setup.py --show-default-install-dirs
 </pre>
 
 <h4 id="installing-source-altprefix">Installing under an alternate <span class="file">prefix</span> directory</h4>
@@ -461,6 +482,7 @@ $ su
     <span class="file">getmailcore</span>
     package into a directory other than the default, the four scripts
     (<span class="file">getmail</span>,
+    <span class="file">getmails</span>,
     <span class="file">getmail_fetch</span>,
     <span class="file">getmail_maildir</span>,
     and
@@ -482,6 +504,16 @@ $ su
             </a>
             for details.
         </p>
+
+        <p>
+          For example, if the directory getmailcore ends up living in
+          $HOME/tmp/getmail/lib/python3.8/site-packages/getmailcore ,
+          then in the shell do:
+        </p>
+        <pre class="example">
+# export PYTHONPATH=$HOME/tmp/getmail/lib/python3.8/site-packages .
+        </pre>
+
         <p class="warning">
             Note that setting
             <span class="file">PYTHONPATH</span>
@@ -525,8 +557,8 @@ import sys
     command from inside the unpacked getmail source.
 </p>
 <pre class="example">
-$ cd getmail-<span class="meta">version</span>
-$ python setup.py bdist --format=<span class="meta">package-format</span>
+# cd getmail-<span class="meta">version</span>
+# python setup.py bdist --format=<span class="meta">package-format</span>
 </pre>
 <p>
     The useful allowed values for <span class="meta">package-format</span> are:

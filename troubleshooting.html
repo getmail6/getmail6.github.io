@@ -1,5 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
     "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!--
+docs/COPYING 2a + DRY: https://github.com/getmail6/getmail6
+Please refer to the git history regarding who changed what and when in this file.
+-->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta http-equiv="content-type" content="application/xhtml+xml;charset=iso-8859-1" />
@@ -7,7 +11,7 @@
     <meta name="author" content="Charles Cazabon and others" />
     <meta name="description" content="Troubleshooting instructions for getmail version 5" />
     <meta name="keywords" content="getmail troubleshooting, getmail 6 troubleshooting, getmail6 troubleshooting, getmail6, POP3, IMAP, SSL, domain mailbox, multidrop, fetchmail replacement, message filtering, maildir, mboxrd, MDA" />
-    <link rel="Contents Up Index" title="Charles Cazabon's Software" href="../" />
+    <link rel="Contents Up Index" title="getmail6" href="../" />
     <style type="text/css" media="all">@import "getmaildocs.css";</style>
     <style type="text/css" media="all">@import "/style/styles.css";</style>
 </head>
@@ -16,22 +20,22 @@
 
 <!----><h1 id="title">getmail documentation</h1>
 <p class="introduction">
-    This is the documentation for getmail version 6.
+    This is the documentation for getmail version 6,
+    a port of getmail version 5 to python 3 without adding features.
 </p>
 <p class="about">
-    getmail is Copyright &copy; 1998-2019 Charles Cazabon.
-	&lt;charlesc-getmail @ pyropus.ca&gt;<br>
-	and &copy; 2020 by Roland Puntaier
+    getmail6 is Copyright &copy; 1998-2026 by Charles Cazabon and others:<br>
+    &lt;charlesc-getmail @ pyropus.ca&gt;<br>
     &lt;roland.puntaier @ gmail.com&gt;
 </p>
 <p class="about">
-    getmail is licensed under the
+    getmail and getmail6 are licensed under the
     <a href="COPYING">GNU General Public License version 2</a> (only).
 </p>
 
 <h1 id="toc">Table of Contents</h1>
 <ul>
-    <li><a href="documentation.html">getmail documentation (version 6)</a></li>
+    <li><a href="documentation.html">getmail documentation</a></li>
     <li>
         <ul>
         <li><a href="documentation.html#title">getmail documentation</a></li>
@@ -45,7 +49,7 @@
         </li>
         </ul>
     </li>
-    <li><a href="configuration.html">getmail configuration (version 6)</a></li>
+    <li><a href="configuration.html">getmail configuration</a></li>
     <li>
         <ul>
         <li><a href="configuration.html#configuring">Configuring getmail</a></li>
@@ -64,7 +68,7 @@
         </li>
         </ul>
     </li>
-    <li><a href="troubleshooting.html">getmail troubleshooting (version 6)</a></li>
+    <li><a href="troubleshooting.html">getmail troubleshooting</a></li>
     <li>
         <ul>
         <li><a href="troubleshooting.html#troubleshooting">Troubleshooting problems</a></li>
@@ -73,7 +77,7 @@
             <li><a href="troubleshooting.html#error-messages">Error messages</a></li>
             <li>
                 <ul>
-                <li><a href="troubleshooting.html#errmsg-pyversion">ImportError: getmail version 6.02 requires Python version 2.7.18 or later</a></li>
+                <li><a href="troubleshooting.html#errmsg-pyversion">ImportError: getmail version 6.xy requires Python version 2.7.18 or later</a></li>
                 <li><a href="troubleshooting.html#errmsg-config">Configuration error: &hellip;</a></li>
                 <li>
                     <ul>
@@ -171,11 +175,12 @@
 </p>
 
 <!-- ********************************************************************** -->
-<h3 id="errmsg-pyversion" class="errmsg">ImportError: getmail version 6.02 requires Python version 2.7.18 or later</h3>
+<h3 id="errmsg-pyversion" class="errmsg">ImportError: getmail version 6.xy requires Python version 2.7.18 or later</h3>
 <p>
     You tried to run getmail with a version of Python prior to Python 2.7.18
     This is unsupported.  If you cannot install a newer Python alongside your
     current version, please use getmail version 5.
+    Since 2025 no Python2 version is supported any more.
 </p>
 
 <!-- ********************************************************************** -->
@@ -258,7 +263,7 @@
 <p>
     By default, getmail will not invoke external commands (in destinations or
     filters) when it is running with root privileges, for security reasons.
-    See the documenation for possible solutions.
+    See the documentation for possible solutions.
 </p>
 
 <h4 id="errmsg-config-no-command" class="errmsg">Configuration error: no such command <span class="meta">path</span></h4>
